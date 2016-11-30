@@ -1,4 +1,4 @@
-package com.exple.food;
+package com.exple.food.service;
 
 import android.app.Service;
 import android.content.Intent;

@@ -7,7 +7,7 @@ public class MyApplication extends Application {
 	
 	public static Context context;
 	
-	public MyApplication() {
+	 public void onCreate() {
 		// TODO Auto-generated constructor stub
 		context=getApplicationContext();
 	}
