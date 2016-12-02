@@ -13,18 +13,18 @@ import com.exple.food.data.foodType;
 public class JsonUtil {
 	
 	
-	public List<foodType>  parseJsonText(String jsonText){
-		List<foodType> list=new ArrayList<foodType>();
+	public static List<Integer>  parseJsonText(String jsonText){
+		List<Integer> list=new ArrayList<Integer>();
 		try {
 //			JSONObject json=new JSONObject(jsonText);
 //			JSONObject object=json.getJSONObject("data");
 			JSONArray jsonArray=new JSONArray(jsonText);
 			for(int i=0;i<jsonArray.length();i++){
 				JSONObject jsonObject=jsonArray.getJSONObject(i);
-				String name=jsonObject.getString("name");
-				String price=jsonObject.getString("price");
-				foodType type=new foodType(name, price);
-				list.add(type);
+//				String name=jsonObject.getString("name");
+				int price=jsonObject.getInt("price");
+//				foodType type=new foodType(name, price);
+				list.add(price);
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

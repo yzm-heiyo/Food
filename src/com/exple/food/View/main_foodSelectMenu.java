@@ -1,12 +1,18 @@
 package com.exple.food.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.exple.food.R;
+import com.exple.food.MyUtil.CustomDialog;
 import com.exple.food.MyUtil.HttpUtil;
+import com.exple.food.MyUtil.JsonUtil;
 import com.exple.food.MyUtil.MyApplication;
 import com.exple.food.MyUtil.getDataFromInternet;
 import com.exple.food.R.drawable;
 import com.exple.food.R.id;
 import com.exple.food.R.layout;
+import com.exple.food.View.MainActivity.receiveDataBroadCast;
 import com.exple.food.data.MyAdapter;
 
 import android.R.integer;
@@ -14,11 +20,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,11 +41,13 @@ public class main_foodSelectMenu extends Fragment implements OnClickListener {
 	private ListView listView;
 	private Button sendHttpbtn;
 	private Button timeBtn;
-	private AlertDialog.Builder builder;
-	private Dialog dialog;
+	private CustomDialog.Builder builder;
 	private Button priceSumBtn;
 	private priceChangeBrodcast brodcast;
 	private String Url_Path="http://www.baidu.com/";
+	private List<Integer> listdata;
+	private List<Integer> receivelistdata;
+	private receiveDataBroadCast broadCast;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,26 +56,38 @@ public class main_foodSelectMenu extends Fragment implements OnClickListener {
 		View view = inflater.inflate(R.layout.main_food, container, false);
 
 		listView = (ListView) view.findViewById(R.id.listView1);
-		listView.setAdapter(new MyAdapter(getActivity()));
-
+		listdata=new ArrayList<Integer>();
+		receivelistdata=new ArrayList<Integer>();
+		listdata.add(25);
+		listdata.add(30);
+		listView.setAdapter(new MyAdapter(getActivity(),listdata));
+		
 		timeBtn=(Button)view.findViewById(R.id.timeBtn);
 		priceSumBtn=(Button)view.findViewById(R.id.priceBtn);
 		
 		sendHttpbtn = (Button) view.findViewById(R.id.senthttpBTN);
 		sendHttpbtn.setOnClickListener(this);
 		
-		builder=new AlertDialog.Builder(getActivity());
-		builder.setTitle("温馨提醒：");
-		builder.setMessage("可以催服务员上菜了");
-		builder.setPositiveButton("ok", null);
+        builder = new CustomDialog.Builder(getActivity());  
+        builder.setMessage("可以催服务员上菜了");  
+        builder.setTitle("提示");  
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {  
+            public void onClick(DialogInterface dialog, int which) {  
+                dialog.dismiss();  
+                //设置你的操作事项  
+            }  
+        });   
+  
 		
-		dialog=builder.create();
-		
-		IntentFilter filter=new IntentFilter();
-		filter.addAction("com.exple.BroadCast.priceChange");
+		IntentFilter pricefilter=new IntentFilter();
+		pricefilter.addAction("com.exple.BroadCast.priceChange");
 		brodcast=new priceChangeBrodcast();
 		
-		getActivity().registerReceiver(brodcast, filter);
+		broadCast = new receiveDataBroadCast();
+		IntentFilter dataChangefilter = new IntentFilter();
+		dataChangefilter.addAction("com.com.receive.main");
+		getActivity().registerReceiver(broadCast, dataChangefilter);
+		getActivity().registerReceiver(brodcast, pricefilter);
 		
 		return view;
 	}
@@ -81,15 +103,7 @@ public class main_foodSelectMenu extends Fragment implements OnClickListener {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				HttpUtil.HttpConnect(Url_Path, new getDataFromInternet() {
-					
-					@Override
-					public String getData(String data) {
-						// TODO Auto-generated method stub
-//						Toast.makeText(getActivity(),"下单成功", 3).show();
-						return null;
-					}
-				});
+				HttpUtil.HttpConnect(Url_Path);
 			}
 		}).start();
 	}
@@ -124,7 +138,7 @@ public class main_foodSelectMenu extends Fragment implements OnClickListener {
 			timeBtn.setBackgroundResource(R.drawable.clock_72px_1157020_easyicon);
 			timeBtn.setText("");
 			sendHttpbtn.setEnabled(true);
-			dialog.show();
+			builder.create().show();
 		}
 	}
 	
@@ -139,10 +153,24 @@ public class main_foodSelectMenu extends Fragment implements OnClickListener {
 		}
 		
 	}
+	public class receiveDataBroadCast extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context arg0, Intent arg1) {
+			// TODO Auto-generated method stub
+			Toast.makeText(MyApplication.getContext(), "00", 3).show();
+			String receivemeassger=arg1.getStringExtra("receivemeassger");
+			Log.i("receivemeassger", receivemeassger);
+			receivelistdata=JsonUtil.parseJsonText(receivemeassger);
+			listView.setAdapter(new MyAdapter(getActivity(),receivelistdata));
+		}
+
+	}
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		getActivity().unregisterReceiver(brodcast);
+		getActivity().unregisterReceiver(broadCast);
 	}
 }

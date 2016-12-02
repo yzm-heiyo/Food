@@ -21,7 +21,7 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 		case 0:
 			return new main_foodSelectMenu();
 		case 1:
-			return new main_advertisement();
+			return new main_foodSelectMenu();
 		case 2:
 			return new main_advertisement();
 		default:

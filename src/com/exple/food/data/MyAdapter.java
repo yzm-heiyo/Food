@@ -1,5 +1,8 @@
 package com.exple.food.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.exple.food.R;
 
 import android.app.Activity;
@@ -18,27 +21,29 @@ import android.widget.TextView;
 public class MyAdapter extends BaseAdapter {
 	
 	String[] data={"omg","wer","dsf","zcx","fvg","bgn","vbv","nbn"};
-	int[] price={20,20,25,25,30,30,35,35};
+	List<Integer> price=new ArrayList<Integer>();
 	Context context;
 	int sum=0;
 	int[] list_value=new int[data.length];
 	ViewHolder holder;
 	
-	public MyAdapter(Activity activity){
+	public MyAdapter(Activity activity,List<Integer> price){
 		context=activity;
+		this.price=price;
 		initdata();
 	}
 	
-	public MyAdapter(FragmentActivity activity) {
+	public MyAdapter(FragmentActivity activity,List<Integer> price) {
 		// TODO Auto-generated constructor stub
 		context=activity;
+		this.price=price;
 		initdata();
 	}
 
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return data.length;
+		return price.size();
 	}
 
 	@Override
@@ -71,7 +76,7 @@ public class MyAdapter extends BaseAdapter {
 			view=arg1;
 			holder=(ViewHolder) view.getTag();
 		}
-		holder.tv1.setText("¥"+price[arg0]);
+		holder.tv1.setText("¥"+price.get(arg0));
 
 		
 		Log.i("enter", "enter");
@@ -115,15 +120,15 @@ public class MyAdapter extends BaseAdapter {
 	private int getsum() {
 		// TODO Auto-generated method stub
 		sum=0;
-		for(int i=0;i<data.length;i++){
-			sum=sum+list_value[i]*price[i];
+		for(int i=0;i<price.size();i++){
+			sum=sum+list_value[i]*(int)price.get(i);
 		}
 		return sum;
 	}
 
 	private void initdata() {
 		// TODO Auto-generated method stub
-		for(int i=0;i<data.length;i++){
+		for(int i=0;i<price.size();i++){
 			list_value[i]=0;
 		}
 	}

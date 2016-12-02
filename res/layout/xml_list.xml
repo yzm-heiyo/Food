@@ -8,7 +8,8 @@
         android:layout_height="60dp"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="15dp"
-        android:src="@drawable/login_btn" />
+        android:layout_marginBottom="90dp"
+        android:background="#FC913A" />
 
     <TextView
         android:id="@+id/textView1"
@@ -44,5 +45,6 @@
         android:layout_marginTop="20dp"
         android:text="-"
         android:textColor="#ffffff" />
+
 
 </RelativeLayout>

@@ -20,15 +20,15 @@ import org.apache.http.message.BasicNameValuePair;
 
 public class HttpUtil {
 
-	public static void HttpConnect(String Url_path,
-			getDataFromInternet dataFromInternet) {
+	public static String HttpConnect(String Url_path/*,
+			getDataFromInternet dataFromInternet*/) {
 		
 		HttpPost httpPost=new HttpPost(Url_path);
 		
 		List<NameValuePair> param=new ArrayList<NameValuePair>();
 		param.add(new BasicNameValuePair("admin", "yang"));
 		param.add(new BasicNameValuePair("password", "123"));
-		
+//		httpPost.setEntity(new UrlEncodedFormEntity(param,"utf-8"));
 		try {
 			httpPost.setEntity(new UrlEncodedFormEntity(param,"utf-8"));
 			
@@ -38,8 +38,9 @@ public class HttpUtil {
 				HttpResponse httpResponse=client.execute(httpPost);
 				
 				if(httpResponse.getStatusLine().getStatusCode()==200){
-					InputStream inputStream=httpPost.getEntity().getContent();
-					dataFromInternet.getData(parseInputstream(inputStream));
+					InputStream inputStream=httpResponse.getEntity().getContent();
+//					dataFromInternet.getData(parseInputstream(inputStream));
+					return parseInputstream(inputStream);
 				}
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
@@ -52,6 +53,7 @@ public class HttpUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return "";
 	}
 
 	private static String parseInputstream(InputStream inputStream) {
